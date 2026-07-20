@@ -55,7 +55,8 @@ document.querySelector('#year').textContent = new Date().getFullYear();
 const form = document.querySelector('#contact-form');
 const status = document.querySelector('#form-status');
 
-const FORM_URL = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec';
+const FORM_URL = 'https://api.web3forms.com/submit';
+const ACCESS_KEY = 'YOUR_ACCESS_KEY';
 
 form?.addEventListener('submit', (event) => {
   event.preventDefault();
@@ -67,18 +68,22 @@ form?.addEventListener('submit', (event) => {
   }
 
   const data = Object.fromEntries(new FormData(form));
+  data.access_key = ACCESS_KEY;
 
   status.textContent = 'Sending...';
   form.querySelector('button').disabled = true;
 
   fetch(FORM_URL, {
     method: 'POST',
-    mode: 'no-cors',
     body: JSON.stringify(data),
-    headers: { 'Content-Type': 'application/json' }
-  }).then(() => {
-    status.textContent = 'Thank you! Your request has been received.';
-    form.reset();
+    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
+  }).then((res) => res.json()).then((res) => {
+    if (res.success) {
+      status.textContent = 'Thank you! Your request has been received.';
+      form.reset();
+    } else {
+      status.textContent = 'Something went wrong. Please try again.';
+    }
   }).catch(() => {
     status.textContent = 'Something went wrong. Please try again.';
   }).finally(() => {
