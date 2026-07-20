@@ -17,6 +17,28 @@ nav?.querySelectorAll('a').forEach((link) => {
   });
 });
 
+const langBtn = document.querySelector('.lang-btn');
+const langDropdown = document.querySelector('.lang-dropdown');
+
+langBtn?.addEventListener('click', (e) => {
+  e.stopPropagation();
+  const isOpen = langBtn.getAttribute('aria-expanded') === 'true';
+  langBtn.setAttribute('aria-expanded', String(!isOpen));
+  langDropdown?.classList.toggle('open', !isOpen);
+});
+
+document.addEventListener('click', () => {
+  langBtn?.setAttribute('aria-expanded', 'false');
+  langDropdown?.classList.remove('open');
+});
+
+langDropdown?.querySelectorAll('a').forEach((link) => {
+  link.addEventListener('click', () => {
+    langDropdown.classList.remove('open');
+    langBtn?.setAttribute('aria-expanded', 'false');
+  });
+});
+
 const observer = new IntersectionObserver((entries) => {
   entries.forEach((entry) => {
     if (entry.isIntersecting) {
