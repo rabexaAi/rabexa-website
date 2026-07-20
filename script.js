@@ -56,7 +56,7 @@ const form = document.querySelector('#contact-form');
 const status = document.querySelector('#form-status');
 
 const FORM_URL = 'https://api.web3forms.com/submit';
-const ACCESS_KEY = 'YOUR_ACCESS_KEY';
+const ACCESS_KEY = 'fd6abb15-4e6c-4b97-bfb0-9d43a2da797d';
 
 form?.addEventListener('submit', (event) => {
   event.preventDefault();
