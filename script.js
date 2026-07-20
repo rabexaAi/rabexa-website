@@ -6,7 +6,7 @@ const nav = document.querySelector('#primary-nav');
 menuButton?.addEventListener('click', () => {
   const isOpen = menuButton.getAttribute('aria-expanded') === 'true';
   menuButton.setAttribute('aria-expanded', String(!isOpen));
-  menuButton.setAttribute('aria-label', isOpen ? 'فتح القائمة' : 'إغلاق القائمة');
+  menuButton.setAttribute('aria-label', isOpen ? 'Open menu' : 'Close menu');
   nav?.classList.toggle('open', !isOpen);
 });
 
@@ -55,15 +55,33 @@ document.querySelector('#year').textContent = new Date().getFullYear();
 const form = document.querySelector('#contact-form');
 const status = document.querySelector('#form-status');
 
+const FORM_URL = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec';
+
 form?.addEventListener('submit', (event) => {
   event.preventDefault();
 
   if (!form.checkValidity()) {
     form.reportValidity();
-    status.textContent = 'يرجى التحقق من الحقول المطلوبة.';
+    status.textContent = 'Please check the required fields.';
     return;
   }
 
-  status.textContent = 'تم التحقق من البيانات. اربط النموذج بخادم آمن لإتمام الإرسال.';
-  form.reset();
+  const data = Object.fromEntries(new FormData(form));
+
+  status.textContent = 'Sending...';
+  form.querySelector('button').disabled = true;
+
+  fetch(FORM_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    body: JSON.stringify(data),
+    headers: { 'Content-Type': 'application/json' }
+  }).then(() => {
+    status.textContent = 'Thank you! Your request has been received.';
+    form.reset();
+  }).catch(() => {
+    status.textContent = 'Something went wrong. Please try again.';
+  }).finally(() => {
+    form.querySelector('button').disabled = false;
+  });
 });
